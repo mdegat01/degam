@@ -1,0 +1,38 @@
+{
+  "title": "InfluxDB",
+  "config": {
+    "step": {
+      "connection": {
+	"description": "Provide connection details for InfluxDB",
+        "data": {
+	  "host": "Host",
+	  "port": "Port",
+	  "path": "Path",
+	  "username": "Username",
+	  "password": "Password",
+	  "ssl": "InfluxDB uses SSL",
+	  "verify_ssl": "InfluxDB uses a valid SSL certificate",
+	  "database": "Database name",
+	  "token": "Token (must have write access)",
+	  "organization": "Organization ID",
+	  "bucket": "Bucket name"
+        }
+      },
+      "user": {
+	"description": "Set up InfluxDB to allow recording of state changes to it",
+	"data": {
+	  "api_version": "InfluxDB version"
+	}
+      }
+    },
+    "error": {
+      "connection_error": "Cannot connect to InfluxDB. Check that it is running and below details are correct",
+      "write_error_token": "Cannot write to InfluxDB. Check token is correct and has correct permissions.",
+      "write_error_basic": "Cannot write to InfluxDB. Check credentials are correct and user has correct permissions.",
+      "unknown": "[%key:common::config_flow::error::unknown%]"
+    },
+    "abort": {
+      "already_configured": "[%key:common::config_flow::abort::already_configured_device%]"
+    }
+  }
+}

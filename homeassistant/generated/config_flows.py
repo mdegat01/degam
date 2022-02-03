@@ -76,6 +76,7 @@ FLOWS = [
     "iaqualink",
     "icloud",
     "ifttt",
+    "influxdb",
     "ios",
     "ipma",
     "ipp",

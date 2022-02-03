@@ -35,6 +35,10 @@ from homeassistant.helpers.entityfilter import (
 )
 
 from .const import (
+    AUTH_ERROR_V1,
+    AUTH_ERROR_V2,
+    CODE_UNAUTHORIZED,
+    CODE_FORBIDDEN,
     API_VERSION_2,
     BATCH_BUFFER_SIZE,
     BATCH_TIMEOUT,
@@ -311,8 +315,11 @@ def get_influx_connection(conf, test_write=False, test_read=False):
             except (urllib3.exceptions.HTTPError, OSError) as exc:
                 raise ConnectionError(CONNECTION_ERROR % exc)
             except ApiException as exc:
-                if exc.status == CODE_INVALID_INPUTS:
+                code = exc.status
+                if code == CODE_INVALID_INPUTS:
                     raise ValueError(WRITE_ERROR % (json, exc))
+                elif code in [CODE_UNAUTHORIZED, CODE_FORBIDDEN]:
+                    raise ConnectionRefusedError(AUTH_ERROR_V2 % exc)
                 raise ConnectionError(CLIENT_ERROR_V2 % exc)
 
         def query_v2(query, _=None):
@@ -322,8 +329,11 @@ def get_influx_connection(conf, test_write=False, test_read=False):
             except (urllib3.exceptions.HTTPError, OSError) as exc:
                 raise ConnectionError(CONNECTION_ERROR % exc)
             except ApiException as exc:
-                if exc.status == CODE_INVALID_INPUTS:
+                code = exc.status
+                if code == CODE_INVALID_INPUTS:
                     raise ValueError(QUERY_ERROR % (query, exc))
+                elif code in [CODE_UNAUTHORIZED, CODE_FORBIDDEN]:
+                    raise ConnectionRefusedError(AUTH_ERROR_V2 % exc)
                 raise ConnectionError(CLIENT_ERROR_V2 % exc)
 
         def close_v2():
@@ -382,8 +392,11 @@ def get_influx_connection(conf, test_write=False, test_read=False):
         ) as exc:
             raise ConnectionError(CONNECTION_ERROR % exc)
         except exceptions.InfluxDBClientError as exc:
-            if exc.code == CODE_INVALID_INPUTS:
+            code = exc.code
+            if code == CODE_INVALID_INPUTS:
                 raise ValueError(WRITE_ERROR % (json, exc))
+            elif code in [CODE_UNAUTHORIZED, CODE_FORBIDDEN]:
+                raise ConnectionRefusedError(AUTH_ERROR_V1 % exc)
             raise ConnectionError(CLIENT_ERROR_V1 % exc)
 
     def query_v1(query, database=None):
@@ -397,8 +410,11 @@ def get_influx_connection(conf, test_write=False, test_read=False):
         ) as exc:
             raise ConnectionError(CONNECTION_ERROR % exc)
         except exceptions.InfluxDBClientError as exc:
-            if exc.code == CODE_INVALID_INPUTS:
+            code = exc.code
+            if code == CODE_INVALID_INPUTS:
                 raise ValueError(QUERY_ERROR % (query, exc))
+            elif code in [CODE_UNAUTHORIZED, CODE_FORBIDDEN]:
+                raise ConnectionRefusedError(AUTH_ERROR_V1 % exc)
             raise ConnectionError(CLIENT_ERROR_V1 % exc)
 
     def close_v1():

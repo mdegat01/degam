@@ -43,9 +43,14 @@ CONF_FUNCTION = "function"
 CONF_QUERY = "query"
 CONF_IMPORTS = "imports"
 
+DEFAULT_HOST = "localhost"
+DEFAULT_PORT = 8086
 DEFAULT_DATABASE = "home_assistant"
+DEFAULT_HOST_V1 = "localhost"
 DEFAULT_HOST_V2 = "us-west-2-1.aws.cloud2.influxdata.com"
+DEFAULT_SSL_V1 = False
 DEFAULT_SSL_V2 = True
+DEFAULT_PORT_V1 = 8086
 DEFAULT_BUCKET = "Home Assistant"
 DEFAULT_VERIFY_SSL = True
 DEFAULT_API_VERSION = "1"
@@ -78,6 +83,8 @@ LANGUAGE_FLUX = "flux"
 TEST_QUERY_V1 = "SHOW SERIES LIMIT 1;"
 TEST_QUERY_V2 = f"buckets() {DEFAULT_FUNCTION_FLUX}"
 CODE_INVALID_INPUTS = 400
+CODE_UNAUTHORIZED = 401
+CODE_FORBIDDEN = 403
 
 MIN_TIME_BETWEEN_UPDATES = timedelta(seconds=60)
 
@@ -98,6 +105,16 @@ CLIENT_ERROR_V1 = (
     "InfluxDB database is not accessible due to '%s'. "
     "Please check that the database, username and password are correct and "
     "that the specified user has the correct permissions set."
+)
+AUTH_ERROR_V2 = (
+    "InfluxDB refused the connection due to '%s'. "
+    "Please check that the provided token is correct and "
+    "has the correct permissions for the specified org and bucket."
+)
+AUTH_ERROR_V1 = (
+    "InfluxDB refused the connection due to '%s'. "
+    "Please check that the provided usename and password are correct and "
+    "the user the correct permissions for the specified database."
 )
 WRITE_ERROR = "Could not write '%s' to influx due to '%s'."
 QUERY_ERROR = (
