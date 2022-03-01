@@ -421,6 +421,7 @@ class SwitchCapabilities(AlexaEntity):
         """Yield the supported interfaces."""
         return [
             AlexaPowerController(self.entity),
+            AlexaContactSensor(self.hass, self.entity),
             AlexaEndpointHealth(self.hass, self.entity),
             Alexa(self.hass),
         ]
