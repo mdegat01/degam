@@ -382,7 +382,6 @@ def async_get_entities(hass, config) -> list[AlexaEntity]:
 @ENTITY_ADAPTERS.register(alert.DOMAIN)
 @ENTITY_ADAPTERS.register(automation.DOMAIN)
 @ENTITY_ADAPTERS.register(group.DOMAIN)
-@ENTITY_ADAPTERS.register(input_boolean.DOMAIN)
 class GenericCapabilities(AlexaEntity):
     """A generic, on/off device.
 
@@ -400,6 +399,24 @@ class GenericCapabilities(AlexaEntity):
         """Yield the supported interfaces."""
         return [
             AlexaPowerController(self.entity),
+            AlexaEndpointHealth(self.hass, self.entity),
+            Alexa(self.hass),
+        ]
+
+
+@ENTITY_ADAPTERS.register(input_boolean.DOMAIN)
+class ToggleCapabilities(AlexaEntity):
+    """Class to represent Toggle capabilities."""
+
+    def default_display_categories(self):
+        """Return the display categories for this entity."""
+        return [DisplayCategory.OTHER]
+
+    def interfaces(self):
+        """Yield the supported interfaces."""
+        return [
+            AlexaPowerController(self.entity),
+            AlexaContactSensor(self.hass, self.entity),
             AlexaEndpointHealth(self.hass, self.entity),
             Alexa(self.hass),
         ]
@@ -440,6 +457,8 @@ class ButtonCapabilities(AlexaEntity):
         """Yield the supported interfaces."""
         return [
             AlexaSceneController(self.entity, supports_deactivation=False),
+            AlexaEventDetectionSensor(self.hass, self.entity),
+            AlexaEndpointHealth(self.hass, self.entity),
             Alexa(self.hass),
         ]
 
